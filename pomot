@@ -1,33 +1,50 @@
 #! /bin/bash
 
-HELP_MSG="Usage: ./pomot\n
+HELP_MSG='Usage: ./pomot\n
           * Options *\n
           -p <time>           -> Set the time of each focus session (in minutes)\n
-          -b <time>           -> Set the time of each break session (in minutes)\n"
- 
+          -b <time>           -> Set the time of each break session (in minutes)\n'
+RUN=1
 POMODORO_TIME=25
 BREAK_TIME=8
 REPETITIONS=4
 
+
+##### Utils #####
+start_pomodoro_msg() {
+    echo "------------------------------------------------------------"
+    echo "Starting a pomodoro. Actual time: $(date +"%r")"
+}
+
+start_break_msg() {
+    echo "------------------------------------------------------------"
+    echo "Break! Actual time: $(date +"%r")"
+}
+
+
 ##### Init #####
 echo "Welcome to pomot, a simple and lightweight pomodoro timer."
-while getopts "p:b:help" arg; do
+while getopts "p:b:h" arg; do
     case $arg in
         p)
             POMODORO_TIME=$OPTARG;;
         b)
             BREAK_TIME=$OPTARG;;
-        help)
-            echo $HELP_MSG;;
+        h)
+            echo $HELP_MSG
+            RUN=0;;
     esac
 done
 echo "- Size of the focus session: $POMODORO_TIME minutes."  
 echo "- Size of the short break session: $BREAK_TIME minutes."
 echo "- Starting timer..."
 
-while [ 1 ]; do
+while [ $RUN ]; do
+    start_pomodoro_msg
     sleep $(($POMODORO_TIME * 60))
     notify-send -u critical "It's time for a break!"
+    start_break_msg
     sleep $(($BREAK_TIME * 60))
     notify-send -u critical "Go back to work!"
 done
+
