@@ -1,9 +1,5 @@
 #! /bin/bash
 
-HELP_MSG='Usage: ./pomot\n
-          * Options *\n
-          -p <time>           -> Set the time of each focus session (in minutes)\n
-          -b <time>           -> Set the time of each break session (in minutes)\n'
 RUN=1
 POMODORO_TIME=25
 BREAK_TIME=8
@@ -21,6 +17,52 @@ start_break_msg() {
     echo "Break! Actual time: $(date +"%r")"
 }
 
+pomodoro_bar() {
+    VALUE=$(($POMODORO_TIME * 60 / 20))
+    echo -ne '[#                    ] -> 0%\r'
+    sleep $VALUE
+    echo -ne '[##                   ] -> 5%\r'
+    sleep $VALUE
+    echo -ne '[###                  ] -> 10%\r'
+    sleep $VALUE
+    echo -ne '[####                 ] -> 15%\r'
+    sleep $VALUE
+    echo -ne '[#####                ] -> 20%\r'
+    sleep $VALUE
+    echo -ne '[######               ] -> 25%\r'
+    sleep $VALUE
+    echo -ne '[#######              ] -> 30%\r'
+    sleep $VALUE
+    echo -ne '[########             ] -> 35%\r'
+    sleep $VALUE
+    echo -ne '[#########            ] -> 40%\r'
+    sleep $VALUE
+    echo -ne '[##########           ] -> 45%\r'
+    sleep $VALUE
+    echo -ne '[###########          ] -> 50%\r'
+    sleep $VALUE
+    echo -ne '[############         ] -> 55%\r'
+    sleep $VALUE
+    echo -ne '[#############        ] -> 60%\r'
+    sleep $VALUE
+    echo -ne '[##############       ] -> 65%\r'
+    sleep $VALUE
+    echo -ne '[###############      ] -> 70%\r'
+    sleep $VALUE
+    echo -ne '[################     ] -> 75%\r'
+    sleep $VALUE
+    echo -ne '[#################    ] -> 80%\r'
+    sleep $VALUE
+    echo -ne '[##################   ] -> 85%\r'
+    sleep $VALUE
+    echo -ne '[###################  ] -> 90%\r'
+    sleep $VALUE
+    echo -ne '[#################### ] -> 95%\r'
+    sleep $VALUE
+    echo -ne '[#####################] -> 100%\r'
+    echo -ne '\n'
+}
+
 
 ##### Init #####
 echo "Welcome to pomot, a simple and lightweight pomodoro timer."
@@ -30,9 +72,6 @@ while getopts "p:b:h" arg; do
             POMODORO_TIME=$OPTARG;;
         b)
             BREAK_TIME=$OPTARG;;
-        h)
-            echo $HELP_MSG
-            RUN=0;;
     esac
 done
 echo "- Size of the focus session: $POMODORO_TIME minutes."  
@@ -41,8 +80,9 @@ echo "- Starting timer..."
 
 while [ $RUN ]; do
     start_pomodoro_msg
-    sleep $(($POMODORO_TIME * 60))
+    pomodoro_bar
     notify-send -u critical "It's time for a break!"
+
     start_break_msg
     sleep $(($BREAK_TIME * 60))
     notify-send -u critical "Go back to work!"
